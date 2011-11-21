@@ -1,3 +1,5 @@
+#coding=utf-8
+
 from django.conf.urls.defaults import patterns, include, url
 from django.conf import settings
 # Uncomment the next two lines to enable the admin:
@@ -7,7 +9,7 @@ from django.conf import settings
 urlpatterns = patterns('',
     (r'^$','ymei168.root.index'),
     (r'^testdatabase/','ymei168.root.testdatabase'),
-    (r'^member/', include('ymei168.member.urls')),
+    (r'^member/', include('ymei168.member.urls')),  # 用户模块
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

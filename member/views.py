@@ -8,3 +8,6 @@ import string
 
 def login(request):
     return HttpResponse("Login")
+
+def register(request):
+    return render_to_response("member/register.html")
