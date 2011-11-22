@@ -85,6 +85,7 @@ CREATE TABLE `ym_member` (
   `member_id` int(7) NOT NULL AUTO_INCREMENT,
   `name` varchar(32) NOT NULL,
   `password` varchar(32) NOT NULL,
+  `emial` varchar(32) DEFAULT NULL,
   `qq` int(12) DEFAULT NULL,
   `phone` int(12) DEFAULT NULL,
   `address` varchar(128) DEFAULT NULL,

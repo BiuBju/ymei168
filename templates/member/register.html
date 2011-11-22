@@ -1,10 +1,15 @@
 {% extends "base.html" %}
 {% block title %}用户注册{% endblock %}
 {% block content %}
-<form>
+<form  style="margin:10px auto;" enctype="multipart/form-data" method="post" action="">
   <fieldset style="width:300px;">
     <legend>用户注册</legend>
-    <label for="username">用户名：</label><input type="text" id="username" name="username" /><br /><br />
-    <label for="password">密码：</label><input type="password" id="password" name="password" /><br />
+    <ul>
+        <li><div><label for="username">用户名：</label></div><input type="text" id="username" name="username" /></li>
+        <li><div><label for="password">密码：</label></div><input type="password" id="password" name="password" /></li>
+        <li><div><label for="email">Email：</label></div><input type="text" id="email" name="email" /></li>
+    </ul>
+    <input type="submit" value="登陆" /><input type="reset" />
   </fieldset>
+</form>
 {% endblock %}
