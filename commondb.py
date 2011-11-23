@@ -10,7 +10,7 @@ import MySQLdb;
 def g_sql_get_data(sql):
     cursor = connection.cursor()
     cursor.execute(sql);
-    data = util.dictfetchall(cursor)
+    data = cursor.fetchall()
     return data;
 
 #查询一条数据
