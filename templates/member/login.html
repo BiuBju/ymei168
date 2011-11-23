@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}用户登陆{% endblock %}
+{% block content %}
+<form  style="margin:10px auto;" enctype="multipart/form-data" method="post" action=".">
+  <fieldset style="width:300px;">
+    <legend>用户登陆</legend>
+    <ul>
+        <li><div><label for="username">用户名：</label></div><input type="text" id="username" name="username" /></li>
+        <li><div><label for="password">密码：</label></div><input type="password" id="password" name="password" /></li>
+    </ul>
+    <input type="submit" value="登陆" /><input type="reset" />
+  </fieldset>
+  {% csrf_token %}
+</form>
+{% endblock %}
