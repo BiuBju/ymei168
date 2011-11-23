@@ -28,13 +28,42 @@ def demailisexist(email):
 #用户注册
 def dinsertuser(username,password,email,ip):
     regdate=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    lastlogin=regdate
+    logintimes=1
     
-    sql="INSERT INTO ym_member SET name='%s',password='%s',email='%s',reg_date='%s',ip='%s'"%(
-        g_sql_escape_string(username),g_sql_escape_string(password),
-        g_sql_escape_string(email),g_sql_escape_string(regdate),ip
+    sql="INSERT INTO ym_member SET name='%s',password='%s',email='%s',login_times=%d,last_login='%s',reg_date='%s',ip='%s'"%(
+        g_sql_escape_string(username),g_sql_escape_string(password),g_sql_escape_string(email),
+        logintimes,g_sql_escape_string(lastlogin),g_sql_escape_string(regdate),ip
     )
 
     gprint(sql)
 
     g_sql_set_data(sql) #插入数据库
 
+#用户登陆
+def dcheckuser(username,password):
+    sql="select * from ym_member where name='%s'"%(g_sql_escape_string(username))
+    gprint(sql)
+    data=g_sql_get_one_data(sql)
+    if(not data):
+        return 1,'用户名不存在'
+    else:
+        realpwd=data['password']
+    if(realpwd==password):
+        today=datetime.now().strftime('%Y-%m-%d')
+        data['login_times']=data['login_times']+1
+        data['last_login']=today
+        # 更新用户信息
+        dloginupdate(data['login_times'],data['last_login'],username)
+        return 0,data #返回用户信息
+    else:
+        return 2,'密码错误'
+        
+#更新用户登录次数和最后一次登陆的时间
+def dloginupdate(logintimes,lastlogin,username):
+    sql="update ym_member set login_times='%s',last_login='%s' where \
+    name='%s'"%(
+    g_sql_escape_string(logintimes),
+    g_sql_escape_string(lastlogin),
+    g_sql_escape_string(username))
+    g_sql_set_data(sql)

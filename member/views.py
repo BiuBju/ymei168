@@ -10,8 +10,48 @@ from ymei168.commonmt import *
 from ymei168.member.models import *
 
 
+#用户登陆
 def login(request):
-    return HttpResponse("Login")
+    if request.method == 'GET': #登陆页面
+        data = {}
+        data.update(csrf(request))
+        return render_to_response("member/login.html", data)
+    if request.method == 'POST': #登陆处理
+        username=gisempty(request.POST.get('username', None)) #用户名
+        password=gisempty(request.POST.get('password', None)) #密码
+        
+        status,result=checkloginform(request,username,password)
+
+        if(status != 0):
+            return HttpResponse(str(status)+":"+result)
+        else:
+            return HttpResponse("登陆成功！");
+
+#验证用户登陆表单
+def checkloginform(request,username,password):
+    if(not username):
+        return 1,'用户名不能为空'
+    if(not password):
+        return 2,'密码不能为空'
+
+    userlen=len(username)
+    if(userlen>=4 and userlen<=20):
+        tmparr=re.findall('\w',username)
+        if(len(tmparr)!=userlen):
+            return 1,'用户名只能为数字或字母'
+    else:
+        return 1,'用户长度为4-16'
+
+    pwdlen=len(password)
+    if(pwdlen>=4 and pwdlen<=16):
+        tmparr=re.findall('\w',password)
+        if(len(tmparr)!=pwdlen):
+            return 2,'密码只能为数字或字母'
+    else:
+        return 2,'密码长度为4-16'
+
+    return dcheckuser(username,password) #检测用户
+
 
 #验证用户注册表单
 def checkregform(request,username,password,password2,uemail,verifycode):
@@ -58,6 +98,7 @@ def checkregform(request,username,password,password2,uemail,verifycode):
 
     return 0, '注册成功！'
 
+
 #用户注册
 def register(request):
     if request.method == 'GET': #注册页面
@@ -71,9 +112,9 @@ def register(request):
         email=gisempty(request.POST.get('email', None)) #邮箱
         verifycode=gisempty(request.POST.get('captcha', None)) #验证码
         ip=request.META.get('REMOTE_ADDR', '0.0.0.0')
-        
+
         status,result=checkregform(request,username,password,password2,email,verifycode)
-        
+
         if(status != 0):
             return HttpResponse(str(status)+":"+result)
         
