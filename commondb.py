@@ -6,16 +6,26 @@ from django.db.backends import util
 from django.core.cache import cache
 import MySQLdb;
 
+
+#以字典格式返回查询数据
+def dictfetchall(cursor):
+    "Returns all rows from a cursor as a dict"
+    desc = cursor.description
+    return [
+        dict(zip([col[0] for col in desc], row))
+        for row in cursor.fetchall()
+    ]
+
 #查询数据
 def g_sql_get_data(sql):
     cursor = connection.cursor()
     cursor.execute(sql);
-    data = cursor.fetchall()
+    data = dictfetchall(cursor)
     return data;
 
 #查询一条数据
 def g_sql_get_one_data(sql):
-    data =  g_sql_get_data( sql )
+    data=g_sql_get_data(sql)
     if(len(data)>=1):
        return data[0];
     return []
