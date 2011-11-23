@@ -83,9 +83,9 @@ DROP TABLE IF EXISTS `ym_member`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `ym_member` (
   `member_id` int(7) NOT NULL AUTO_INCREMENT,
-  `name` varchar(32) NOT NULL,
+  `name` varchar(32) UNIQUE NOT NULL,
   `password` varchar(32) NOT NULL,
-  `email` varchar(32) DEFAULT NULL,
+  `email` varchar(32) UNIQUE NOT NULL,
   `qq` int(12) DEFAULT NULL,
   `phone` int(12) DEFAULT NULL,
   `address` varchar(128) DEFAULT NULL,
