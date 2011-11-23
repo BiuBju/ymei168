@@ -9,6 +9,8 @@
         <li><div><label for="password">密码：</label></div><input type="password" id="password" name="password" /></li>
         <li><div><label for="password2">确认密码：</label></div><input type="password" id="password2" name="password2" /></li>
         <li><div><label for="email">Email：</label></div><input type="text" id="email" name="email" /></li>
+        <li><div><label for="captcha">验证码：</label></div><input type="text" id="captcha" name="captcha" /></li>
+        <li><div></div><image src="/member/captcha/" onclick="this.setAttribute('src','/member/captcha/?nocache='+Math.random());" /></li>
     </ul>
     <input type="submit" value="注册" /><input type="reset" />
   </fieldset>

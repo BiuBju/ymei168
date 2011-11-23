@@ -14,7 +14,7 @@ def login(request):
     return HttpResponse("Login")
 
 #验证用户注册表单
-def checkregform(username,password,password2,uemail):
+def checkregform(request,username,password,password2,uemail,verifycode):
     if(not username):
         return 1,'用户名不能为空'
     if(not password):
@@ -23,6 +23,8 @@ def checkregform(username,password,password2,uemail):
         return 3,'确认密码不能为空'
     if(not uemail):
         return 4,'邮件不能为空'
+    if(not verifycode):
+        return 5,'验证码不能为空'
 
     userlen=len(username)
     if(userlen>=4 and userlen<=20):
@@ -45,11 +47,14 @@ def checkregform(username,password,password2,uemail):
     match=re.search('\w+@(\w+.)+[a-z]{2,3}',uemail)
     if(not match):
         return 4,'邮件格式不对'
+        
+    if(request.session.get('captcha')!=verifycode):
+        return 5,'验证码不正确'
 
     if(duserisexist(username)==1):
         return 1,'用户名被占用'
     if(demailisexist(uemail)==1):
-        return 10,'邮箱被占用'
+        return 4,'邮箱被占用'
 
     return 0, '注册成功！'
 
@@ -64,9 +69,10 @@ def register(request):
         password=gisempty(request.POST.get('password', None)) #密码
         password2=gisempty(request.POST.get('password2', None)) #确认密码
         email=gisempty(request.POST.get('email', None)) #邮箱
+        verifycode=gisempty(request.POST.get('captcha', None)) #验证码
         ip=request.META.get('REMOTE_ADDR', '0.0.0.0')
         
-        status,result=checkregform(username,password,password2,email)
+        status,result=checkregform(request,username,password,password2,email,verifycode)
         
         if(status != 0):
             return HttpResponse(str(status)+":"+result)
@@ -74,4 +80,7 @@ def register(request):
         dinsertuser(username,password,email,ip) #插入数据库
         return HttpResponse("注册成功");
 
+#验证码
+def captcha(request):
+    return verifycode(request)
 
