@@ -84,11 +84,14 @@ DROP TABLE IF EXISTS `ym_member`;
 CREATE TABLE `ym_member` (
   `member_id` int(7) NOT NULL AUTO_INCREMENT,
   `name` varchar(32) UNIQUE NOT NULL,
+  `nickname` varchar(32) DEFAULT NULL,
   `password` varchar(32) NOT NULL,
   `email` varchar(32) UNIQUE NOT NULL,
   `qq` int(12) DEFAULT NULL,
   `phone` int(12) DEFAULT NULL,
   `address` varchar(128) DEFAULT NULL,
+  `login_times` int(8) NOT NULL,
+  `last_login` datetime NOT NULL,
   `reg_date` datetime NOT NULL,
   `ip` varchar(16) NOT NULL,
   PRIMARY KEY (`member_id`)
