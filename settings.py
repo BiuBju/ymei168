@@ -1,4 +1,5 @@
 # Django settings for ymei168 project.
+#coding=utf-8
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -147,3 +148,28 @@ LOGGING = {
         },
     }
 }
+
+
+# 暂时使用文件系统来做缓存
+SESSION_ENGINE = 'django.contrib.sessions.backends.file'
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': '/var/tmp/django_cache',
+        'TIMEOUT': 6,
+    }
+}
+
+# 设置 session 有效期为 30min
+SESSION_COOKIE_AGE = 1800
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
+    'django.core.context_processors.static',
+    'django.contrib.messages.context_processors.messages',
+    'ymei168.commonmt.ggetsession',
+)
