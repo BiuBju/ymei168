@@ -62,3 +62,26 @@ def verifycode(request):
     buf.closed
     return HttpResponse(buf.getvalue(),'image/png')
     
+
+def giflogin(request):
+    '''
+    用户是否登陆
+    magicalboy 11.11.24
+    '''
+    loginid = request.session.get('uid', None)
+    if( not loginid or loginid=='None'):
+              return False;
+    return loginid;
+
+
+def ggetsession(request):
+    '''
+    所有页面可以取得的session
+    magicalboy 11.11.24
+    '''
+    gprint("设置所有页面可以取得的session")
+    username = request.session.get('username', None)
+    uid = request.session.get('uid', None)
+
+    return {'username':username,'uid':str(uid)}
+

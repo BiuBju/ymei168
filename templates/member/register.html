@@ -12,7 +12,7 @@
         <li><div><label for="captcha">验证码：</label></div><input type="text" id="captcha" name="captcha" /></li>
         <li><div></div><image src="/member/captcha/" onclick="this.setAttribute('src','/member/captcha/?nocache='+Math.random());" /></li>
     </ul>
-    <input type="submit" value="注册" /><input type="reset" />
+    <input type="submit" value="注册" /><input type="reset" /><a href="/member/login/">登陆</a>
   </fieldset>
   {% csrf_token %}
 </form>

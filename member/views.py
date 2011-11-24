@@ -9,9 +9,22 @@ import re
 from ymei168.commonmt import *
 from ymei168.member.models import *
 
+def index(request):
+    '''
+    用户首页
+    magicalboy 11.11.24
+    '''
+    if(giflogin(request)):
+        return render_to_response("member/index.html",{},context_instance=RequestContext(request))
+    else:
+        return HttpResponseRedirect("/member/login/"); #重定向到登陆页面
 
-#用户登陆
+
 def login(request):
+    '''
+    用户登陆
+    magicalboy 11.11.23
+    '''
     if request.method == 'GET': #登陆页面
         data = {}
         data.update(csrf(request))
@@ -25,10 +38,15 @@ def login(request):
         if(status != 0):
             return HttpResponse(str(status)+":"+result)
         else:
-            return HttpResponse("登陆成功！");
+            setsession(request,result) #设置session
+            return HttpResponseRedirect("/member/")
 
-#验证用户登陆表单
+
 def checkloginform(request,username,password):
+    '''
+    验证用户登陆表单
+    magicalboy 11.11.23
+    '''
     if(not username):
         return 1,'用户名不能为空'
     if(not password):
@@ -53,8 +71,20 @@ def checkloginform(request,username,password):
     return dcheckuser(username,password) #检测用户
 
 
-#验证用户注册表单
+def setsession(request,data):
+    '''
+    设置session
+    magicalboy 11.11.24
+    '''
+    request.session['username'] = data['name']
+    request.session['uid'] = data['member_id']
+
+
 def checkregform(request,username,password,password2,uemail,verifycode):
+    '''
+    验证用户注册表单
+    magicalboy 11.11.22
+    '''
     if(not username):
         return 1,'用户名不能为空'
     if(not password):
@@ -99,8 +129,11 @@ def checkregform(request,username,password,password2,uemail,verifycode):
     return 0, '注册成功！'
 
 
-#用户注册
 def register(request):
+    '''
+    用户注册
+    magicalboy 11.11.22
+    '''
     if request.method == 'GET': #注册页面
         data = {}
         data.update(csrf(request))
@@ -119,9 +152,26 @@ def register(request):
             return HttpResponse(str(status)+":"+result)
         
         dinsertuser(username,password,email,ip) #插入数据库
-        return HttpResponse("注册成功");
+        
+        return HttpResponseRedirect("/member/login/"); #重定向到登陆页面
 
-#验证码
+
 def captcha(request):
+    '''
+    验证码
+    magicalboy 11.11.23
+    '''
     return verifycode(request)
+        
 
+def logout (request):
+    '''
+    退出登陆
+    magicalboy 11.11.24
+    '''
+    try:
+        del request.session['username']
+        del request.session['uid']
+    except KeyError, e:
+        pass
+    return HttpResponseRedirect("/member/login/")
