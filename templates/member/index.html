@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}我的首页{% endblock %}
+{% block content %}
+<h1>欢迎 {{username}}！</h1>
+<a href="/member/logout/">退出登陆</a>
+<form  style="margin:10px auto;" enctype="multipart/form-data" method="post" action=".">
+  <fieldset style="width:300px;">
+    <legend>用户信息</legend>
+    <ul>
+        <li><div><label for="username">登陆名：</label></div><input type="text" id="username" name="username" /></li>
+        <li><div><label for="nickname">昵称：</label></div><input type="text" id="nickname" name="nickname" /></li>
+        <li><div><label for="email">邮箱：</label></div><input type="text" id="email" name="email" /></li>
+        <li><div><label for="email">真实姓名：</label></div><input type="text" id="email" name="email" /></li>
+        <li><div><label for="email">性别：</label></div><input type="text" id="email" name="email" /></li>
+        <li><div><label for="email">所在地：</label></div><input type="text" id="email" name="email" /></li>
+        <li><div><label for="email">详细地址：</label></div><input type="text" id="email" name="email" /></li>
+        <li><div><label for="email">手机号码：</label></div><input type="text" id="email" name="email" /></li>
+    </ul>
+    <input type="submit" value="保存" /><input type="reset" /><a href="/member/">修改密码</a>
+  </fieldset>
+  {% csrf_token %}
+</form>
+{% endblock %}
