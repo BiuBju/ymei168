@@ -173,3 +173,5 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.messages.context_processors.messages',
     'ymei168.commonmt.ggetsession',
 )
+
+DEFAULT_CHARSET = 'utf-8'
