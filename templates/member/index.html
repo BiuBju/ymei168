@@ -1,21 +1,147 @@
 {% extends "base.html" %}
 {% block title %}我的首页{% endblock %}
+{% block js %}
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type = "text/javascript">
+// Define the entry point
+$(document).ready(function()
+{
+    // The DOM (document object model) is constructed
+    // We will initialize and run our plugin here
+
+    /*
+     * 在前端处理可以减少服务器负担，优化其性能
+     * @author magicalboy
+     * @since 11.11.26
+     */
+    // 选择省
+    //    $.each($("#province option"), function(i, option) {
+    //        if(option.value == {{province}}) {
+    //            option.selected = "selected";
+    //        }
+    //    });
+    var $gender = $("input:radio[name=gender]").filter("[value={{gender}}]").attr("checked", true);;
+    $("#province").val({{province}});
+    $("#city").val({{city}});
+    $("#county").val({{county}});
+
+    function setupAjax() {
+        $.ajaxSetup({ 
+             beforeSend: function(xhr, settings) {
+                 function getCookie(name) {
+                     var cookieValue = null;
+                     if (document.cookie && document.cookie != '') {
+                         var cookies = document.cookie.split(';');
+                         for (var i = 0; i < cookies.length; i++) {
+                             var cookie = jQuery.trim(cookies[i]);
+                             // Does this cookie string begin with the name we want?
+                         if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                             cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                             break;
+                         }
+                     }
+                 }
+                 return cookieValue;
+                 }
+                 if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                     // Only send the token to relative URLs i.e. locally.
+                     xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                 }
+             } 
+        });
+    }
+    
+    /*
+     * 选择省时获取其对应的城市和地区，需要提交本地 csrf token, Ajax请求，json格式返回
+     * @author magicalboy
+     * @since 11.11.26
+     */
+    $("#province").change(function() {
+        setupAjax();
+    
+        $.post("queryarea/",{"region_id":$("#province").val(),"action":"getcity"},
+            function(data, textStatus) {
+                if (textStatus == "success") {
+                    $("#city").empty();
+                    $("#county").empty();
+                    // 城市
+                    for (var i = 0; i < data.city_list.length; i++) {
+                        $("#city").append("<option value=" + data.city_list[i].region_id + ">" + data.city_list[i].region_name + "</option>");
+                    }
+                    
+                    // 地区
+                    for (var i = 0; i < data.county_list.length; i++) {
+                        $("#county").append("<option value=" + data.county_list[i].region_id + ">" + data.county_list[i].region_name + "</option>");
+                    }
+                }
+                else {
+                    alert("获取数据失败，请检查网络！");
+                }
+            }
+        ,"json");
+    });
+    
+    /*
+     * 选择城市时获取对应的地区，需要提交本地 csrf token, Ajax请求，json格式返回
+     * @author magicalboy
+     * @since 11.11.26
+     */
+    $("#city").change(function() {
+        setupAjax();
+
+        $.post("queryarea/",{"region_id":$("#city").val(),"action":"getcounty"},
+            function(data, textStatus) {
+                if (textStatus == "success") {
+                    $("#county").empty();               
+                    // 地区
+                    for (var i = 0; i < data.county_list.length; i++) {
+                        $("#county").append("<option value=" + data.county_list[i].region_id + ">" + data.county_list[i].region_name + "</option>");
+                    }
+                }
+                else {
+                    alert("获取数据失败，请检查网络！");
+                }
+            }
+        ,"json");
+    });
+});
+</script>
+{% endblock %}
 {% block content %}
 <h1>欢迎 {{username}}！</h1>
 <a href="/member/logout/">退出登陆</a>
-<form  style="margin:10px auto;" enctype="multipart/form-data" method="post" action=".">
+<form  style="margin:10px auto;" enctype="multipart/form-data" method="post" action="action/">
   <fieldset style="width:300px;">
-    <legend>用户信息</legend>
+    <legend>用户信息修改</legend>
     <ul>
-        <li><div><label for="username">登陆名：</label></div><input type="text" id="username" name="username" /></li>
-        <li><div><label for="nickname">昵称：</label></div><input type="text" id="nickname" name="nickname" /></li>
-        <li><div><label for="email">邮箱：</label></div><input type="text" id="email" name="email" /></li>
-        <li><div><label for="email">真实姓名：</label></div><input type="text" id="email" name="email" /></li>
-        <li><div><label for="email">性别：</label></div><input type="text" id="email" name="email" /></li>
-        <li><div><label for="email">所在地：</label></div><input type="text" id="email" name="email" /></li>
-        <li><div><label for="email">详细地址：</label></div><input type="text" id="email" name="email" /></li>
-        <li><div><label for="email">手机号码：</label></div><input type="text" id="email" name="email" /></li>
+        <li><div><label for="nickname">昵称：</label></div><input type="text" id="nickname" name="nickname" value="{{nickname}}"/></li>
+        <li><div><label for="email">邮箱：</label></div><input type="text" id="email" name="email" value="{{email}}"/></li>
+        <li><div><label for="realname">真实姓名：</label></div><input type="text" id="realname" name="realname" value="{{realname}}"/></li>
+        <li><div><label for="gender">性别：</label></div>
+            <input type="radio" id="gender_m" name="gender" value="m"/><label for="gender_m">男</label>
+            <input type="radio" id="gender_f"  name="gender" value="f"/><label for="gender_f">女</label>
+        </li>
+        <li><div><label for="location">所在地：</label></div>
+            <select name="province" id="province">
+                {% for prov in province_list %}
+                <option value="{{prov.region_id}}">{{prov.region_name}}</option>
+                {% endfor %}
+            </select>
+            <select name="city" id="city">
+                {% for c in city_list %}
+                <option value="{{c.region_id}}">{{c.region_name}}</option>
+                {% endfor %}
+            </select>
+            <select name="county" id="county">
+                {% for coun in county_list %}
+                <option value="{{coun.region_id}}">{{coun.region_name}}</option>
+                {% endfor %}
+            </select>
+        </li>
+        <li><div><label for="address">详细地址：</label></div><input type="text" id="address" name="address" value="{{address}}"/></li>
+        <li><div><label for="phone">手机号码：</label></div><input type="text" id="phone" name="phone" value="{{phone}}"/></li>
     </ul>
+    <input type="hidden" id="action" name="action" value="update"/>
     <input type="submit" value="保存" /><input type="reset" /><a href="/member/">修改密码</a>
   </fieldset>
   {% csrf_token %}

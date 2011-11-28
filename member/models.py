@@ -1,4 +1,5 @@
-#coding=utf-8
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 
 from django.db import models
 from datetime import *
@@ -54,16 +55,43 @@ def dcheckuser(username,password):
         data['login_times']=data['login_times']+1
         data['last_login']=today
         # 更新用户信息
-        dloginupdate(data['login_times'],data['last_login'],username)
+        dloginupdate(data['login_times'],data['last_login'],data['member_id'])
         return 0,data #返回用户信息
     else:
         return 2,'密码错误'
         
-#更新用户登录次数和最后一次登陆的时间
-def dloginupdate(logintimes,lastlogin,username):
+
+def dloginupdate(logintimes,lastlogin,memberid):
+    '''
+    更新用户登录次数和最后一次登陆的时间
+    @author magicalboy
+    @date 2011.11.26
+    '''
     sql="update ym_member set login_times='%s',last_login='%s' where \
-    name='%s'"%(
-    g_sql_escape_string(logintimes),
-    g_sql_escape_string(lastlogin),
-    g_sql_escape_string(username))
+    member_id=%d"%(
+        g_sql_escape_string(logintimes),
+        g_sql_escape_string(lastlogin),
+        memberid
+    )
+    
     g_sql_set_data(sql)
+
+
+def dupdateuser(nickname,realname,gender,province,city,county,address,phone,memberid):
+    '''
+    更新用户信息：nickname,realname,gender,province,city,county,address,phone
+    @author magicalboy
+    @date 11.11.26
+    '''
+    sql="UPDATE ym_member SET nickname='%s',realname='%s',gender='%s',province=%d,\
+    city=%d,county=%d,address='%s',phone='%s' WHERE member_id=%d"%(
+        g_sql_escape_string(nickname),g_sql_escape_string(realname),
+        gender,int(province),int(city),int(county),g_sql_escape_string(address),
+        g_sql_escape_string(phone),int(memberid)
+    )
+    
+    gprint(sql)
+    g_sql_set_data(sql)
+    
+    
+    
