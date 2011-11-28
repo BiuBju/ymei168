@@ -68,7 +68,7 @@ def giflogin(request):
     用户是否登陆
     magicalboy 11.11.24
     '''
-    loginid = request.session.get('uid', None)
+    loginid = request.session.get('uid')
     if( not loginid or loginid=='None'):
               return False;
     return loginid;
@@ -79,9 +79,22 @@ def ggetsession(request):
     所有页面可以取得的session
     magicalboy 11.11.24
     '''
-    gprint("设置所有页面可以取得的session")
-    username = request.session.get('username', None)
-    uid = request.session.get('uid', None)
 
-    return {'username':username,'uid':str(uid)}
+    uid = request.session.get('uid')
+    username = request.session.get('username')
+    nickname = request.session.get('nickname')
+    realname = request.session.get('realname')
+    email = request.session.get('email')
+    gender = request.session.get('gender')
+    province = request.session.get('province')
+    city = request.session.get('city')
+    county = request.session.get('county')
+    address = request.session.get('address')
+    phone = request.session.get('phone')
+    
+    return {
+        'uid':str(uid),'username':username,'nickname':nickname,'realname':realname,
+        'email':email,'gender':gender,'province':province,'city':city,'county':county,
+        'address':address,'phone':phone
+    }
 
